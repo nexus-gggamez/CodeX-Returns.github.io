@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>HTTP 403</title>
+    <style>
+      body {
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="reason">
+      <h1>Incorrect password.</h1>
+    </div>
+    <script>
+      const get = new URLSearchParams(location.search);
+      document.getElementById('reason').innerHTML = get.get('reason');
+      localStorage.clear();
+    </script>
+  </body>
+</html>

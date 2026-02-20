@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeX - Music</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="logo.svg" alt="CodeX Logo">
+            <h1>CodeX</h1>
+        </div>        
+        <nav>
+            <ul>
+                <li><a href="home.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="games.html"><i class="fas fa-gamepad"></i> Games</a></li>
+                <li><a href="music.html" class="active"><i class="fas fa-music"></i> Music</a></li>
+                <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
+                <li><a href="system.html"><i class="fas fa-microchip"></i> System</a></li>
+                <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <main>
+        <section class="content">
+            <h2><i class="fas fa-music"></i> Music Search</h2>
+            <p>Search for any song, artist, or album. Results will open in a new tab with YouTube search results.</p>
+        </section>
+        
+        <section class="music-search-container">
+            <div class="music-search-box">
+                <div class="search-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <input type="text" id="music-search-input" placeholder="Search for songs, artists, or albums...">
+                <button id="music-search-button">
+                    <i class="fas fa-play"></i> Search
+                </button>
+            </div>
+            
+            <div class="popular-searches">
+                <h3>Popular Searches</h3>
+                <div class="popular-tags">
+                    <span class="tag" onclick="searchMusic('The Weeknd')">The Weeknd</span>
+                    <span class="tag" onclick="searchMusic('Billie Eilish')">Billie Eilish</span>
+                    <span class="tag" onclick="searchMusic('Drake')">Drake</span>
+                    <span class="tag" onclick="searchMusic('Taylor Swift')">Taylor Swift</span>
+                    <span class="tag" onclick="searchMusic('Dua Lipa')">Dua Lipa</span>
+                    <span class="tag" onclick="searchMusic('Post Malone')">Post Malone</span>
+                    <span class="tag" onclick="searchMusic('Ariana Grande')">Ariana Grande</span>
+                    <span class="tag" onclick="searchMusic('Bad Bunny')">Bad Bunny</span>
+                </div>
+            </div>
+            
+            <div class="music-categories">
+                <div class="category">
+                    <h3><i class="fas fa-fire"></i> Trending</h3>
+                    <ul>
+                        <li onclick="searchMusic('Top Hits 2023')">Top Hits 2023</li>
+                        <li onclick="searchMusic('Viral TikTok Songs')">Viral TikTok Songs</li>
+                        <li onclick="searchMusic('Billboard Hot 100')">Billboard Hot 100</li>
+                    </ul>
+                </div>
+                
+                <div class="category">
+                    <h3><i class="fas fa-guitar"></i> Genres</h3>
+                    <ul>
+                        <li onclick="searchMusic('Pop Music')">Pop</li>
+                        <li onclick="searchMusic('Hip Hop Music')">Hip Hop</li>
+                        <li onclick="searchMusic('Rock Music')">Rock</li>
+                        <li onclick="searchMusic('EDM Music')">EDM</li>
+                    </ul>
+                </div>
+                
+                <div class="category">
+                    <h3><i class="fas fa-compact-disc"></i> Playlists</h3>
+                    <ul>
+                        <li onclick="searchMusic('Study Music Playlist')">Study Music</li>
+                        <li onclick="searchMusic('Workout Music Playlist')">Workout Music</li>
+                        <li onclick="searchMusic('Chill Music Playlist')">Chill Vibes</li>
+                        <li onclick="searchMusic('Gaming Music Playlist')">Gaming Music</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <p>© 2025 CodeX Gaming. All rights reserved. <i class="fas fa-code"></i> with <i class="fas fa-heart" style="color: var(--primary);"></i></p>
+    </footer>
+    
+    <div class="page-transition"></div>
+    
+    <script src="script.js"></script>
+    <script>
+        function applyWebsiteSettings() {
+          const savedSettingsJSON = localStorage.getItem('websiteSettings');
+          if (savedSettingsJSON) {
+            try {
+              const savedSettings = JSON.parse(savedSettingsJSON);
+              if (savedSettings.title) document.title = savedSettings.title;
+              if (savedSettings.favicon) {
+                let faviconLink = document.querySelector('link[rel="icon"]');
+                if (!faviconLink) {
+                  faviconLink = document.createElement('link');
+                  faviconLink.rel = 'icon';
+                  document.head.appendChild(faviconLink);
+                }
+                faviconLink.href = savedSettings.favicon;
+              }
+              if (savedSettings.theme) document.body.className = savedSettings.theme;
+            } catch (error) {
+              console.error('Error applying website settings:', error);
+            }
+          }
+        }
+        applyWebsiteSettings();
+        window.addEventListener('storage', function(e) {
+          if (e.key === 'settingsUpdated' || e.key === 'websiteSettings') {
+            applyWebsiteSettings();
+          }
+        });
+      </script>      
+</body>
+</html>

@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeX - System</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Add these lines to your HTML head section -->
+<link rel="stylesheet" href="admin-panel.css">
+<script src="user-check.js"></script>
+<script src="admin-panel.js"></script>
+    <style>
+        .system-container {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .system-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .system-title {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #ff0022;
+            text-shadow: 0 0 10px rgba(255, 0, 34, 0.5);
+        }
+        
+        .system-subtitle {
+            font-size: 1.2rem;
+            color: #f0f0f0;
+            opacity: 0.8;
+        }
+        
+        .system-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        
+        .system-card {
+            background: rgba(20, 20, 20, 0.7);
+            border: 1px solid rgba(255, 0, 34, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .system-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 0, 34, 0.2);
+            border-color: rgba(255, 0, 34, 0.4);
+        }
+        
+        .system-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, transparent, #ff0022, transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .system-card:hover::before {
+            opacity: 1;
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .card-icon {
+            font-size: 1.5rem;
+            margin-right: 15px;
+            color: #ff0022;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 0, 34, 0.1);
+            border-radius: 50%;
+        }
+        
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #f0f0f0;
+        }
+        
+        .info-item {
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+            padding-bottom: 8px;
+        }
+        
+        .info-item:last-child {
+            margin-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .info-label {
+            font-weight: 500;
+            color: #cccccc;
+        }
+        
+        .info-value {
+            color: #f0f0f0;
+            text-align: right;
+            font-family: 'Courier New', monospace;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        
+        .battery-indicator {
+            height: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+            position: relative;
+        }
+        
+        .battery-level {
+            height: 100%;
+            background: linear-gradient(90deg, #ff0022, #ff6b6b);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+        
+        .battery-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ffffff;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
+        }
+        
+        .refresh-button {
+            display: block;
+            margin: 30px auto;
+            background: rgba(255, 0, 34, 0.1);
+            color: #ff0022;
+            border: 1px solid rgba(255, 0, 34, 0.3);
+            padding: 10px 25px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+        }
+        
+        .refresh-button:hover {
+            background: rgba(255, 0, 34, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 0, 34, 0.2);
+        }
+        
+        .refresh-button i {
+            margin-right: 8px;
+        }
+        
+        .system-footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #888888;
+            font-size: 0.9rem;
+        }
+        
+        .system-footer a {
+            color: #ff0022;
+            text-decoration: none;
+        }
+        
+        .system-footer a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Animation for data loading */
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+        
+        .loading {
+            animation: pulse 1.5s infinite;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .system-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .system-title {
+                font-size: 2rem;
+            }
+        }
+        
+        /* Network activity indicator */
+        .network-activity {
+            display: flex;
+            align-items: center;
+            margin-top: 15px;
+        }
+        
+        .activity-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .activity-up {
+            background-color: #00ff88;
+            box-shadow: 0 0 5px #00ff88;
+        }
+        
+        .activity-down {
+            background-color: #ff0022;
+            box-shadow: 0 0 5px #ff0022;
+        }
+        
+        .activity-label {
+            font-size: 0.8rem;
+            color: #cccccc;
+        }
+        
+        /* CPU usage bar */
+        .cpu-usage-bar {
+            height: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+        
+        .cpu-usage-level {
+            height: 100%;
+            background: linear-gradient(90deg, #4d88ff, #00ccff);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-transition"></div>
+    
+    <header>
+        <div class="logo">
+            <img src="logo.svg" alt="CodeX Logo">
+            <h1>CodeX</h1>
+        </div>        
+        </div>
+        <nav>
+            <ul>
+                <li><a href="home.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="games.html"><i class="fas fa-gamepad"></i> Games</a></li>
+                <li><a href="music.html"><i class="fas fa-music"></i> Music</a></li>
+                <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
+                <li><a href="system.html" class="active"><i class="fas fa-microchip"></i> System</a></li>
+                <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="system-container">
+            <div class="system-header">
+                <h2 class="system-title"><i class="fas fa-microchip"></i> System Information</h2>
+                <p class="system-subtitle">Detailed technical specifications of your device</p>
+            </div>
+            
+            <div class="system-grid">
+                <!-- Device Information -->
+                <div class="system-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-laptop"></i>
+                        </div>
+                        <h3 class="card-title">Device Information</h3>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Device Type</span>
+                        <span class="info-value" id="device-type">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Platform</span>
+                        <span class="info-value" id="platform">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">User Agent</span>
+                        <span class="info-value" id="user-agent">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Screen Resolution</span>
+                        <span class="info-value" id="screen-resolution">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Pixel Ratio</span>
+                        <span class="info-value" id="pixel-ratio">Loading...</span>
+                    </div>
+                </div>
+                
+                <!-- Browser Information -->
+                <div class="system-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <h3 class="card-title">Browser Information</h3>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Browser</span>
+                        <span class="info-value" id="browser-name">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Browser Version</span>
+                        <span class="info-value" id="browser-version">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Cookies Enabled</span>
+                        <span class="info-value" id="cookies-enabled">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">JavaScript Enabled</span>
+                        <span class="info-value" id="javascript-enabled">Yes</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Language</span>
+                        <span class="info-value" id="browser-language">Loading...</span>
+                    </div>
+                </div>
+                
+                <!-- Operating System -->
+                <div class="system-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-desktop"></i>
+                        </div>
+                        <h3 class="card-title">Operating System</h3>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">OS Name</span>
+                        <span class="info-value" id="os-name">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">OS Version</span>
+                        <span class="info-value" id="os-version">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Architecture</span>
+                        <span class="info-value" id="architecture">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Cores</span>
+                        <span class="info-value" id="cpu-cores">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">CPU Usage</span>
+                        <span class="info-value" id="cpu-usage">N/A</span>
+                    </div>
+                    <div class="cpu-usage-bar">
+                        <div class="cpu-usage-level" id="cpu-usage-level" style="width: 0%"></div>
+                    </div>
+                </div>
+                
+                <!-- Battery Information -->
+                <div class="system-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-battery-half"></i>
+                        </div>
+                        <h3 class="card-title">Battery Status</h3>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Battery Available</span>
+                        <span class="info-value" id="battery-available">Checking...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Battery Level</span>
+                        <span class="info-value" id="battery-level">N/A</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Charging Status</span>
+                        <span class="info-value" id="battery-charging">N/A</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Charging Time</span>
+                        <span class="info-value" id="battery-charging-time">N/A</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Discharging Time</span>
+                        <span class="info-value" id="battery-discharging-time">N/A</span>
+                    </div>
+                    <div class="battery-indicator">
+                        <div class="battery-level" id="battery-level-indicator" style="width: 0%"></div>
+                        <div class="battery-text" id="battery-text">N/A</div>
+                    </div>
+                </div>
+                
+                <!-- Memory Information -->
+                <div class="system-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-memory"></i>
+                        </div>
+                        <h3 class="card-title">Memory Information</h3>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Device Memory</span>
+                        <span class="info-value" id="device-memory">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Max Touch Points</span>
+                        <span class="info-value" id="max-touch-points">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Hardware Concurrency</span>
+                        <span class="info-value" id="hardware-concurrency">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Memory Usage</span>
+                        <span class="info-value" id="memory-usage">Limited access</span>
+                    </div>
+                </div>
+                
+                <!-- Network Information -->
+                <div class="system-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-network-wired"></i>
+                        </div>
+                        <h3 class="card-title">Network Information</h3>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Online Status</span>
+                        <span class="info-value" id="online-status">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Connection Type</span>
+                        <span class="info-value" id="connection-type">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Effective Type</span>
+                        <span class="info-value" id="effective-type">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Downlink</span>
+                        <span class="info-value" id="downlink">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">RTT</span>
+                        <span class="info-value" id="rtt">Loading...</span>
+                    </div>
+                    <div class="network-activity">
+                        <div class="activity-indicator activity-down" id="download-indicator"></div>
+                        <span class="activity-label">Download</span>
+                        <div class="activity-indicator activity-up" id="upload-indicator" style="margin-left: 20px;"></div>
+                        <span class="activity-label">Upload</span>
+                    </div>
+                </div>
+                
+                <!-- Feature Support -->
+                <div class="system-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h3 class="card-title">Feature Support</h3>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">WebGL</span>
+                        <span class="info-value" id="webgl-support">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Canvas</span>
+                        <span class="info-value" id="canvas-support">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">WebRTC</span>
+                        <span class="info-value" id="webrtc-support">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Gamepad API</span>
+                        <span class="info-value" id="gamepad-support">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Web Audio</span>
+                        <span class="info-value" id="web-audio-support">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Notifications</span>
+                        <span class="info-value" id="notifications-support">Loading...</span>
+                    </div>
+                </div>
+                
+                <!-- Time Information -->
+                <div class="system-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h3 class="card-title">Time Information</h3>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Current Time</span>
+                        <span class="info-value" id="current-time">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Timezone</span>
+                        <span class="info-value" id="timezone">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Timezone Offset</span>
+                        <span class="info-value" id="timezone-offset">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Page Loaded</span>
+                        <span class="info-value" id="page-loaded">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Uptime</span>
+                        <span class="info-value" id="uptime">Loading...</span>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="refresh-button" id="refresh-button">
+                <i class="fas fa-sync-alt"></i> Refresh System Information
+            </button>
+            
+            <div class="system-footer">
+                <p>Note: Some information may be limited due to browser security restrictions.</p>
+                <p>CodeX System Information &copy; 2025 | <a href="about.html">About CodeX</a></p>
+            </div>
+        </div>
+    </main>
+    
+    <script src="script.js"></script>
+    <script>
+        // System information script
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize system information
+            updateSystemInfo();
+            
+            // Set up refresh button
+            document.getElementById('refresh-button').addEventListener('click', function() {
+                updateSystemInfo();
+                this.classList.add('loading');
+                setTimeout(() => {
+                    this.classList.remove('loading');
+                }, 1000);
+            });
+            
+            // Update time continuously
+            setInterval(updateTimeInfo, 1000);
+            
+            // Simulate network activity
+            setInterval(simulateNetworkActivity, 2000);
+        });
+        
+        // Function to update all system information
+        function updateSystemInfo() {
+            // Device Information
+            updateDeviceInfo();
+            
+            // Browser Information
+            updateBrowserInfo();
+            
+            // OS Information
+            updateOSInfo();
+            
+            // Battery Information
+            updateBatteryInfo();
+            
+            // Memory Information
+            updateMemoryInfo();
+            
+            // Network Information
+            updateNetworkInfo();
+            
+            // Feature Support
+            updateFeatureSupport();
+            
+            // Time Information
+            updateTimeInfo();
+        }
+        
+        // Update Device Information
+        function updateDeviceInfo() {
+            // Detect device type
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            const isTablet = /iPad|Android(?!.*Mobile)/i.test(navigator.userAgent);
+            let deviceType = 'Desktop';
+            
+            if (isMobile && !isTablet) deviceType = 'Mobile';
+            if (isTablet) deviceType = 'Tablet';
+            
+            document.getElementById('device-type').textContent = deviceType;
+            document.getElementById('platform').textContent = navigator.platform;
+            document.getElementById('user-agent').textContent = navigator.userAgent.substring(0, 50) + '...';
+            document.getElementById('screen-resolution').textContent = `${window.screen.width} x ${window.screen.height}`;
+            document.getElementById('pixel-ratio').textContent = window.devicePixelRatio;
+        }
+        
+        // Update Browser Information
+        function updateBrowserInfo() {
+            // Detect browser
+            const userAgent = navigator.userAgent;
+            let browserName = 'Unknown';
+            let browserVersion = '';
+            
+            if (userAgent.indexOf('Firefox') > -1) {
+                browserName = 'Mozilla Firefox';
+                browserVersion = userAgent.match(/Firefox\/([0-9.]+)/)[1];
+            } else if (userAgent.indexOf('SamsungBrowser') > -1) {
+                browserName = 'Samsung Browser';
+                browserVersion = userAgent.match(/SamsungBrowser\/([0-9.]+)/)[1];
+            } else if (userAgent.indexOf('Opera') > -1 || userAgent.indexOf('OPR') > -1) {
+                browserName = 'Opera';
+                browserVersion = userAgent.indexOf('OPR') > -1 ? 
+                    userAgent.match(/OPR\/([0-9.]+)/)[1] : 
+                    userAgent.match(/Opera\/([0-9.]+)/)[1];
+            } else if (userAgent.indexOf('Edg') > -1) {
+                browserName = 'Microsoft Edge';
+                browserVersion = userAgent.match(/Edg\/([0-9.]+)/)[1];
+            } else if (userAgent.indexOf('Chrome') > -1) {
+                browserName = 'Google Chrome';
+                browserVersion = userAgent.match(/Chrome\/([0-9.]+)/)[1];
+            } else if (userAgent.indexOf('Safari') > -1) {
+                browserName = 'Apple Safari';
+                browserVersion = userAgent.match(/Safari\/([0-9.]+)/)[1];
+            }
+            
+            document.getElementById('browser-name').textContent = browserName;
+            document.getElementById('browser-version').textContent = browserVersion;
+            document.getElementById('cookies-enabled').textContent = navigator.cookieEnabled ? 'Yes' : 'No';
+            document.getElementById('browser-language').textContent = navigator.language || navigator.userLanguage;
+        }
+        
+        // Update OS Information
+        function updateOSInfo() {
+            const userAgent = navigator.userAgent;
+            let osName = 'Unknown';
+            let osVersion = '';
+            
+            if (userAgent.indexOf('Windows NT') > -1) {
+                osName = 'Windows';
+                const ntVersion = userAgent.match(/Windows NT ([0-9.]+)/)[1];
+                
+                switch(ntVersion) {
+                    case '10.0': osVersion = '10/11'; break;
+                    case '6.3': osVersion = '8.1'; break;
+                    case '6.2': osVersion = '8'; break;
+                    case '6.1': osVersion = '7'; break;
+                    case '6.0': osVersion = 'Vista'; break;
+                    case '5.2': osVersion = 'XP 64-bit/Server 2003'; break;
+                    case '5.1': osVersion = 'XP'; break;
+                    default: osVersion = ntVersion;
+                }
+            } else if (userAgent.indexOf('Mac OS X') > -1) {
+                osName = 'macOS';
+                osVersion = userAgent.match(/Mac OS X ([0-9_.]+)/)[1].replace(/_/g, '.');
+            } else if (userAgent.indexOf('Android') > -1) {
+                osName = 'Android';
+                osVersion = userAgent.match(/Android ([0-9.]+)/)[1];
+            } else if (userAgent.indexOf('iOS') > -1 || userAgent.indexOf('iPhone OS') > -1) {
+                osName = 'iOS';
+                osVersion = userAgent.match(/OS ([0-9_]+)/)[1].replace(/_/g, '.');
+            } else if (userAgent.indexOf('Linux') > -1) {
+                osName = 'Linux';
+                osVersion = 'Unknown';
+            }
+            
+            document.getElementById('os-name').textContent = osName;
+            document.getElementById('os-version').textContent = osVersion;
+            document.getElementById('architecture').textContent = navigator.userAgentData ? 
+                navigator.userAgentData.platform : 'Unknown';
+            document.getElementById('cpu-cores').textContent = navigator.hardwareConcurrency || 'Unknown';
+            
+            // Simulate CPU usage (not actually available in browsers)
+            const cpuUsage = Math.floor(Math.random() * 100);
+            document.getElementById('cpu-usage').textContent = `${cpuUsage}%`;
+            document.getElementById('cpu-usage-level').style.width = `${cpuUsage}%`;
+        }
+        
+        // Update Battery Information
+        function updateBatteryInfo() {
+            if ('getBattery' in navigator) {
+                document.getElementById('battery-available').textContent = 'Yes';
+                
+                navigator.getBattery().then(battery => {
+                    updateBatteryStatus(battery);
+                    
+                    // Listen for battery status changes
+                    battery.addEventListener('levelchange', () => updateBatteryStatus(battery));
+                    battery.addEventListener('chargingchange', () => updateBatteryStatus(battery));
+                    battery.addEventListener('chargingtimechange', () => updateBatteryStatus(battery));
+                    battery.addEventListener('dischargingtimechange', () => updateBatteryStatus(battery));
+                });
+            } else {
+                document.getElementById('battery-available').textContent = 'No';
+                document.getElementById('battery-level').textContent = 'N/A';
+                document.getElementById('battery-charging').textContent = 'N/A';
+                document.getElementById('battery-charging-time').textContent = 'N/A';
+                document.getElementById('battery-discharging-time').textContent = 'N/A';
+            }
+        }
+        
+        // Update Battery Status
+        function updateBatteryStatus(battery) {
+            const level = Math.floor(battery.level * 100);
+            document.getElementById('battery-level').textContent = `${level}%`;
+            document.getElementById('battery-charging').textContent = battery.charging ? 'Yes' : 'No';
+            
+            // Update charging time
+            if (battery.charging) {
+                const chargingTime = battery.chargingTime === Infinity ? 
+                    'Unknown' : formatTime(battery.chargingTime);
+                document.getElementById('battery-charging-time').textContent = chargingTime;
+            } else {
+                document.getElementById('battery-charging-time').textContent = 'N/A';
+            }
+            
+            // Update discharging time
+            if (!battery.charging) {
+                const dischargingTime = battery.dischargingTime === Infinity ? 
+                    'Unknown' : formatTime(battery.dischargingTime);
+                document.getElementById('battery-discharging-time').textContent = dischargingTime;
+            } else {
+                document.getElementById('battery-discharging-time').textContent = 'N/A';
+            }
+            
+            // Update battery indicator
+            const batteryLevelIndicator = document.getElementById('battery-level-indicator');
+            const batteryText = document.getElementById('battery-text');
+            
+            batteryLevelIndicator.style.width = `${level}%`;
+            batteryText.textContent = `${level}%`;
+            
+            // Change color based on level
+            if (level <= 20) {
+                batteryLevelIndicator.style.background = 'linear-gradient(90deg, #ff0022, #ff6b6b)';
+            } else if (level <= 50) {
+                batteryLevelIndicator.style.background = 'linear-gradient(90deg, #ffaa00, #ffcc00)';
+            } else {
+                batteryLevelIndicator.style.background = 'linear-gradient(90deg, #00cc44, #88ff88)';
+            }
+        }
+        
+        // Update Memory Information
+        function updateMemoryInfo() {
+            if ('deviceMemory' in navigator) {
+                document.getElementById('device-memory').textContent = `${navigator.deviceMemory} GB`;
+            } else {
+                document.getElementById('device-memory').textContent = 'Not available';
+            }
+            
+            document.getElementById('max-touch-points').textContent = navigator.maxTouchPoints || 'Unknown';
+            document.getElementById('hardware-concurrency').textContent = navigator.hardwareConcurrency || 'Unknown';
+        }
+        
+        // Update Network Information
+        function updateNetworkInfo() {
+            document.getElementById('online-status').textContent = navigator.onLine ? 'Online' : 'Offline';
+            
+            if ('connection' in navigator) {
+                const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+                
+                if (connection) {
+                    document.getElementById('connection-type').textContent = connection.type || 'Unknown';
+                    document.getElementById('effective-type').textContent = connection.effectiveType || 'Unknown';
+                    document.getElementById('downlink').textContent = connection.downlink ? 
+                        `${connection.downlink} Mbps` : 'Unknown';
+                    document.getElementById('rtt').textContent = connection.rtt ? 
+                        `${connection.rtt} ms` : 'Unknown';
+                    
+                    // Add event listener for connection changes
+                    connection.addEventListener('change', updateNetworkInfo);
+                }
+            } else {
+                document.getElementById('connection-type').textContent = 'Not available';
+                document.getElementById('effective-type').textContent = 'Not available';
+                document.getElementById('downlink').textContent = 'Not available';
+                document.getElementById('rtt').textContent = 'Not available';
+            }
+        }
+        
+        // Simulate network activity
+        function simulateNetworkActivity() {
+            const downloadIndicator = document.getElementById('download-indicator');
+            const uploadIndicator = document.getElementById('upload-indicator');
+            
+            // Randomly show/hide indicators to simulate activity
+            downloadIndicator.style.opacity = Math.random() > 0.5 ? '1' : '0.2';
+            uploadIndicator.style.opacity = Math.random() > 0.7 ? '1' : '0.2';
+        }
+        
+        // Update Feature Support
+        function updateFeatureSupport() {
+            // WebGL support
+            try {
+                const canvas = document.createElement('canvas');
+                const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                document.getElementById('webgl-support').textContent = gl ? 'Supported' : 'Not supported';
+            } catch (e) {
+                document.getElementById('webgl-support').textContent = 'Not supported';
+            }
+            
+            // Canvas support
+            document.getElementById('canvas-support').textContent = 
+                !!document.createElement('canvas').getContext ? 'Supported' : 'Not supported';
+            
+            // WebRTC support
+            document.getElementById('webrtc-support').textContent = 
+                (navigator.getUserMedia || navigator.webkitGetUserMedia || 
+                 navigator.mozGetUserMedia || navigator.msGetUserMedia || window.RTCPeerConnection) ? 
+                'Supported' : 'Not supported';
+            
+            // Gamepad API support
+            document.getElementById('gamepad-support').textContent = 
+                !!navigator.getGamepads ? 'Supported' : 'Not supported';
+            
+            // Web Audio support
+            document.getElementById('web-audio-support').textContent = 
+                window.AudioContext || window.webkitAudioContext ? 'Supported' : 'Not supported';
+            
+            // Notifications support
+            document.getElementById('notifications-support').textContent = 
+                'Notification' in window ? 'Supported' : 'Not supported';
+        }
+        
+        // Update Time Information
+        function updateTimeInfo() {
+            const now = new Date();
+            
+            document.getElementById('current-time').textContent = now.toLocaleString();
+            document.getElementById('timezone').textContent = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            document.getElementById('timezone-offset').textContent = `UTC${formatTimezoneOffset(now.getTimezoneOffset())}`;
+            
+            // Page loaded time
+            if (!window.pageLoadTime) {
+                window.pageLoadTime = now;
+                document.getElementById('page-loaded').textContent = now.toLocaleString();
+            }
+            
+            // Calculate uptime
+            const uptime = Math.floor((now - window.pageLoadTime) / 1000);
+            document.getElementById('uptime').textContent = formatTime(uptime);
+        }
+        
+        // Helper function to format time
+        function formatTime(seconds) {
+            if (seconds < 60) return `${seconds} seconds`;
+            if (seconds < 3600) return `${Math.floor(seconds / 60)} minutes`;
+            
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            
+            return `${hours} hours, ${minutes} minutes`;
+        }
+        
+        // Helper function to format timezone offset
+        function formatTimezoneOffset(offset) {
+            const sign = offset > 0 ? '-' : '+';
+            offset = Math.abs(offset);
+            const hours = Math.floor(offset / 60);
+            const minutes = offset % 60;
+            
+            return `${sign}${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+        }
+    </script>
+    <script>
+        function applyWebsiteSettings() {
+          const savedSettingsJSON = localStorage.getItem('websiteSettings');
+          if (savedSettingsJSON) {
+            try {
+              const savedSettings = JSON.parse(savedSettingsJSON);
+              if (savedSettings.title) document.title = savedSettings.title;
+              if (savedSettings.favicon) {
+                let faviconLink = document.querySelector('link[rel="icon"]');
+                if (!faviconLink) {
+                  faviconLink = document.createElement('link');
+                  faviconLink.rel = 'icon';
+                  document.head.appendChild(faviconLink);
+                }
+                faviconLink.href = savedSettings.favicon;
+              }
+              if (savedSettings.theme) document.body.className = savedSettings.theme;
+            } catch (error) {
+              console.error('Error applying website settings:', error);
+            }
+          }
+        }
+        applyWebsiteSettings();
+        window.addEventListener('storage', function(e) {
+          if (e.key === 'settingsUpdated' || e.key === 'websiteSettings') {
+            applyWebsiteSettings();
+          }
+        });
+      </script>
+      
+</body>
+</html>

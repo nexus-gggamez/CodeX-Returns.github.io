@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeX - About</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Add these lines to your HTML head section -->
+<link rel="stylesheet" href="admin-panel.css">
+<script src="user-check.js"></script>
+<script src="admin-panel.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="logo.svg" alt="CodeX Logo">
+            <h1>CodeX</h1>
+        </div>        
+        <nav>
+            <ul>
+                <li><a href="home.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="games.html"><i class="fas fa-gamepad"></i> Games</a></li>
+                <li><a href="music.html"><i class="fas fa-music"></i> Music</a></li>
+                <li><a href="about.html" class="active"><i class="fas fa-info-circle"></i> About</a></li>
+                <li><a href="system.html"><i class="fas fa-microchip"></i> System</a></li>
+                <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <main>
+        <section class="about-section">
+            <div class="about-image">
+                <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Gaming Setup">
+            </div>
+            <div class="about-content">
+                <h2><i class="fas fa-info-circle"></i> About CodeX</h2>
+                <p>CodeX Gaming was founded with a simple mission: to make gaming accessible to everyone, everywhere. We understand that network restrictions in schools, workplaces, and other environments can limit access to entertainment during breaks.</p>
+                
+                <p>Our platform provides a curated collection of browser-based games that can be played without installation, downloads, or special permissions. We've designed our system to work in environments where gaming websites are typically blocked.</p>
+                
+                <p>All games on CodeX are carefully selected to ensure they are appropriate for all ages and run smoothly in standard web browsers. We regularly update our library with new titles and maintain existing ones to ensure the best gaming experience.</p>
+                
+                <p>CodeX is more than just a gaming platform - it's a community. We value your feedback and suggestions for new games to add to our collection.</p>
+            </div>
+        </section>
+        
+        <section class="content">
+            <h2><i class="fas fa-question-circle"></i> How It Works</h2>
+            <p>CodeX uses advanced techniques to bypass network restrictions while maintaining security and privacy. When you click "Play Now" on any game, we load the game in a new browser tab with a custom configuration that helps avoid detection by content filters.</p>
+            
+            <p>Our method doesn't require any special software, browser extensions, or VPNs. It works directly in your standard web browser, making it accessible on virtually any device with internet access.</p>
+            
+            <p>While we strive to make all games accessible in all environments, some particularly strict network configurations may still block certain games. If you encounter any issues, please let us know so we can work on alternative solutions.</p>
+        </section>
+        
+        <section class="content">
+            <h2><i class="fas fa-shield-alt"></i> Our Commitment</h2>
+            <p>At CodeX, we're committed to providing a safe, reliable, and enjoyable gaming experience. We don't collect personal data, display intrusive advertisements, or require account creation. Our platform is designed to be simple, fast, and accessible.</p>
+            
+            <p>We believe that everyone deserves a break now and then, and gaming is a great way to relax and recharge. Whether you're a student looking to unwind between classes or an employee taking a short break from work, CodeX is here to provide instant entertainment.</p>
+            
+            <p>Our team is constantly working to improve the platform, add new games, and ensure everything runs smoothly. We welcome your feedback and suggestions - after all, CodeX was built for gamers, by gamers.</p>
+        </section>
+    </main>
+    
+    <footer>
+        <p>&copy; 2025 CodeX Gaming. All rights reserved. <i class="fas fa-code"></i> with <i class="fas fa-heart" style="color: var(--primary);"></i></p>
+    </footer>
+    
+    <div class="page-transition"></div>
+    
+    <script src="script.js"></script>
+    <script>
+        function applyWebsiteSettings() {
+          const savedSettingsJSON = localStorage.getItem('websiteSettings');
+          if (savedSettingsJSON) {
+            try {
+              const savedSettings = JSON.parse(savedSettingsJSON);
+              if (savedSettings.title) document.title = savedSettings.title;
+              if (savedSettings.favicon) {
+                let faviconLink = document.querySelector('link[rel="icon"]');
+                if (!faviconLink) {
+                  faviconLink = document.createElement('link');
+                  faviconLink.rel = 'icon';
+                  document.head.appendChild(faviconLink);
+                }
+                faviconLink.href = savedSettings.favicon;
+              }
+              if (savedSettings.theme) document.body.className = savedSettings.theme;
+            } catch (error) {
+              console.error('Error applying website settings:', error);
+            }
+          }
+        }
+        applyWebsiteSettings();
+        window.addEventListener('storage', function(e) {
+          if (e.key === 'settingsUpdated' || e.key === 'websiteSettings') {
+            applyWebsiteSettings();
+          }
+        });
+      </script>
+      
+</body>
+</html>
