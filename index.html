@@ -4,29 +4,415 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .calculator-wrapper {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            width: 100%;
+            max-width: 400px;
+            transition: all 0.5s ease;
+        }
+
+        .calculator-wrapper.hidden {
+            display: none;
+        }
+
+        .password-wrapper {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            display: none;
+        }
+
+        .password-wrapper.show {
+            display: block;
+        }
+
+        .calc-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .display {
+            background: #f0f0f0;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: right;
+            font-size: 32px;
+            min-height: 60px;
+            word-wrap: break-word;
+            word-break: break-all;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        button {
+            padding: 18px;
+            font-size: 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .btn-number {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-number:hover {
+            background: #d0d0d0;
+            transform: translateY(-2px);
+        }
+
+        .btn-number:active {
+            transform: translateY(0);
+            background: #c0c0c0;
+        }
+
+        .btn-operator {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-operator:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .btn-operator:active {
+            transform: translateY(0);
+            background: #4557c0;
+        }
+
+        .btn-equals {
+            grid-column: span 2;
+            background: #48bb78;
+            color: white;
+            font-size: 18px;
+        }
+
+        .btn-equals:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+        }
+
+        .btn-equals:active {
+            transform: translateY(0);
+            background: #2f8659;
+        }
+
+        .btn-clear {
+            grid-column: span 2;
+            background: #f56565;
+            color: white;
+        }
+
+        .btn-clear:hover {
+            background: #e53e3e;
+            transform: translateY(-2px);
+        }
+
+        .btn-clear:active {
+            transform: translateY(0);
+            background: #c53030;
+        }
+
+        .password-title {
+            margin-bottom: 30px;
+            color: #333;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .password-input-group {
+            margin-bottom: 20px;
+        }
+
+        .password-input-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .password-input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .password-btn {
+            width: 100%;
+            padding: 15px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 10px;
+        }
+
+        .password-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .password-btn:active {
+            transform: translateY(0);
+            background: #4557c0;
+        }
+
+        .back-btn {
+            width: 100%;
+            padding: 12px;
+            background: #cbd5e0;
+            color: #333;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            background: #a0aec0;
+            transform: translateY(-2px);
+        }
+
+        .back-btn:active {
+            transform: translateY(0);
+            background: #8596a8;
+        }
+
+        #error-message {
+            color: #f56565;
+            margin-top: 15px;
+            font-weight: bold;
+            min-height: 24px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Simple Calculator</h1>
-    <form id="calculator-form">
-        <input type="text" id="expression" placeholder="Enter expression, e.g., 67+41" required>
-        <button type="submit">Calculate</button>
-    </form>
+    <div class="container">
+        <div class="calculator-wrapper" id="calcWrapper">
+            <div class="calc-title">Calculator</div>
+            <div class="display" id="display">0</div>
+            <div class="buttons">
+                <button class="btn-number" onclick="appendNumber('7')">7</button>
+                <button class="btn-number" onclick="appendNumber('8')">8</button>
+                <button class="btn-number" onclick="appendNumber('9')">9</button>
+                <button class="btn-operator" onclick="appendOperator('/')">÷</button>
+                
+                <button class="btn-number" onclick="appendNumber('4')">4</button>
+                <button class="btn-number" onclick="appendNumber('5')">5</button>
+                <button class="btn-number" onclick="appendNumber('6')">6</button>
+                <button class="btn-operator" onclick="appendOperator('*')">×</button>
+                
+                <button class="btn-number" onclick="appendNumber('1')">1</button>
+                <button class="btn-number" onclick="appendNumber('2')">2</button>
+                <button class="btn-number" onclick="appendNumber('3')">3</button>
+                <button class="btn-operator" onclick="appendOperator('-')">−</button>
+                
+                <button class="btn-number" onclick="appendNumber('0')">0</button>
+                <button class="btn-number" onclick="appendNumber('.')">.</button>
+                <button class="btn-equals" onclick="calculate()">=</button>
+                <button class="btn-operator" onclick="appendOperator('+')">+</button>
+                
+                <button class="btn-clear" onclick="clearDisplay()">Clear</button>
+                <button class="btn-clear" onclick="deleteLast()">Delete</button>
+            </div>
+        </div>
+
+        <div class="password-wrapper" id="passwordWrapper">
+            <div class="password-title">Access Required</div>
+            <div class="password-input-group">
+                <input type="password" id="password" placeholder="Enter access code" autocomplete="off" onkeypress="handlePasswordKeypress(event)">
+            </div>
+            <button class="password-btn" onclick="checkPassword()">Verify Access</button>
+            <button class="back-btn" onclick="backToCalculator()">← Back</button>
+            <div id="error-message"></div>
+        </div>
+    </div>
+
     <script>
-        document.getElementById('calculator-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const expression = document.getElementById('expression').value;
-            const password = "YWxsIGhhaWwgYWxp";
-            if(eval(expression) === 108) { // 67 + 41 = 108
-                const userPassword = prompt('Enter password:');
-                if(userPassword === password) {
-                    window.location.href = 'home.html';
-                } else {
-                    alert('Incorrect password!');
-                }
+        let display = document.getElementById('display');
+        let currentInput = '0';
+        let previousValue = '';
+        let operator = '';
+        let shouldResetDisplay = false;
+
+        function updateDisplay() {
+            display.textContent = currentInput;
+        }
+
+        function appendNumber(num) {
+            if (shouldResetDisplay) {
+                currentInput = num;
+                shouldResetDisplay = false;
             } else {
-                alert('Incorrect calculation!');
+                if (currentInput === '0' && num !== '.') {
+                    currentInput = num;
+                } else if (num === '.' && currentInput.includes('.')) {
+                    return;
+                } else {
+                    currentInput += num;
+                }
             }
-        });
+            updateDisplay();
+        }
+
+        function appendOperator(op) {
+            if (operator && !shouldResetDisplay) {
+                calculate();
+            }
+            previousValue = currentInput;
+            operator = op;
+            shouldResetDisplay = true;
+        }
+
+        function calculate() {
+            if (operator && previousValue !== '') {
+                let result;
+                const prev = parseFloat(previousValue);
+                const current = parseFloat(currentInput);
+
+                switch (operator) {
+                    case '+':
+                        result = prev + current;
+                        break;
+                    case '-':
+                        result = prev - current;
+                        break;
+                    case '*':
+                        result = prev * current;
+                        break;
+                    case '/':
+                        if (current === 0) {
+                            currentInput = 'Cannot divide by 0';
+                            updateDisplay();
+                            operator = '';
+                            previousValue = '';
+                            shouldResetDisplay = true;
+                            return;
+                        }
+                        result = prev / current;
+                        break;
+                    default:
+                        return;
+                }
+
+                // Check if calculation equals 67+41=108
+                if (previousValue === '67' && currentInput === '41' && operator === '+' && result === 108) {
+                    transitionToPassword();
+                    return;
+                }
+
+                currentInput = result.toString();
+                operator = '';
+                previousValue = '';
+                shouldResetDisplay = true;
+                updateDisplay();
+            }
+        }
+
+        function clearDisplay() {
+            currentInput = '0';
+            previousValue = '';
+            operator = '';
+            shouldResetDisplay = false;
+            updateDisplay();
+        }
+
+        function deleteLast() {
+            if (currentInput.length > 1) {
+                currentInput = currentInput.slice(0, -1);
+            } else {
+                currentInput = '0';
+            }
+            updateDisplay();
+        }
+
+        function transitionToPassword() {
+            document.getElementById('calcWrapper').classList.add('hidden');
+            document.getElementById('passwordWrapper').classList.add('show');
+            document.getElementById('password').focus();
+            document.getElementById('error-message').textContent = '';
+        }
+
+        function backToCalculator() {
+            document.getElementById('calcWrapper').classList.remove('hidden');
+            document.getElementById('passwordWrapper').classList.remove('show');
+            clearDisplay();
+            document.getElementById('error-message').textContent = '';
+        }
+
+        function handlePasswordKeypress(event) {
+            if (event.key === 'Enter') {
+                checkPassword();
+            }
+        }
+
+        function checkPassword() {
+            const password = document.getElementById('password').value;
+            const correctPassword = 'YWxsIGhhaWwgYWxp';
+
+            if (password === correctPassword) {
+                window.location.href = '/home.html';
+            } else {
+                document.getElementById('error-message').textContent = 'Incorrect password. Try again.';
+                document.getElementById('password').value = '';
+                document.getElementById('password').focus();
+            }
+        }
+
+        updateDisplay();
     </script>
 </body>
 </html>
