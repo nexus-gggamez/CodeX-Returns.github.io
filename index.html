@@ -404,6 +404,9 @@
             const correctPassword = 'YWxsIGhhaWwgYWxp';
 
             if (password === correctPassword) {
+                // Set authentication token in localStorage
+                localStorage.setItem('codexAuthenticated', 'true');
+                localStorage.setItem('codexAuthTime', Date.now().toString());
                 window.location.href = 'home.html';
             } else {
                 document.getElementById('error-message').textContent = 'Incorrect password. Try again.';
