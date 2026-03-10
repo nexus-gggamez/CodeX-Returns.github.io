@@ -8,9 +8,22 @@
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="logo.svg">
     <!-- Add these lines to your HTML head section -->
-<link rel="stylesheet" href="admin-panel.css">
-<script src="user-check.js"></script>
-<script src="admin-panel.js"></script>
+    <link rel="stylesheet" href="admin-panel.css">
+    <script src="user-check.js"></script>
+    <script src="admin-panel.js"></script>
+    <script>
+        // Check if user is authenticated
+        function checkAuthentication() {
+            const authenticated = localStorage.getItem('codexAuthenticated');
+            if (authenticated !== 'true') {
+                // Redirect back to index.html if not authenticated
+                window.location.href = 'index.html';
+            }
+        }
+        
+        // Run check on page load
+        checkAuthentication();
+    </script>
 </head>
 <body>
     <!-- Page Transition Effect -->
@@ -119,3 +132,4 @@
     <script src="settings.js"></script>
 </body>
 </html>
+
